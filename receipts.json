@@ -1,0 +1,65 @@
+[
+        {
+            "storeId": "WAL001",
+            "pinCode": 30234,
+            "receiptNumber": 1,
+            "items": [
+                {
+                    "itemId": "GROC001",
+                    "itemPrice": 10,
+                    "taxRate": 0.06,
+                    "discount": 0.00
+                },
+                {
+                    "itemId": "GROC001",
+                    "itemPrice": 10,
+                    "taxRate": 0.06,
+                    "discount": 0.00
+                },
+                {
+                    "itemId": "GROC002",
+                    "itemPrice": 20,
+                    "taxRate": 0.02,
+                    "discount": 0.10
+                }
+            ],
+            "itemsSold": 3,
+            "total": 39.60,
+            "timestamp": "2021-02-01 14:00:00 EST"
+        },
+    
+        {
+            "storeId": "WAL001",
+            "pinCode": 30234,
+            "receiptNumber": 2,
+            "items": [
+                {
+                    "itemId": "GROC001",
+                    "itemPrice": 10,
+                    "taxRate": 0.06,
+                    "discount": 0.00
+                },
+                {
+                    "itemId": "GROC001",
+                    "itemPrice": 10,
+                    "taxRate": 0.06,
+                    "discount": 0.00
+                },
+                {
+                    "itemId": "GROC002",
+                    "itemPrice": 20,
+                    "taxRate": 0.02,
+                    "discount": 0.10
+                },
+                {
+                    "itemId": "GROC002",
+                    "itemPrice": -20,
+                    "taxRate": 0.02,
+                    "discount": 0.10
+                }
+            ],
+            "itemsSold": 2,
+            "total": 21.20,
+            "timestamp": "2021-02-01 14:00:00 EST"
+        }
+    ]
