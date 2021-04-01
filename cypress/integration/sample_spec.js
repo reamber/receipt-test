@@ -1,24 +1,21 @@
 describe('Receipt Validation Test', function () {
     // 1
     it('should validate the values of the fields', function () {
-            cy.readFile('receipts.json').its(0).its('storeId').should('eq', 'WAL001');
-            cy.readFile('receipts.json').its(0).its('pinCode').should('eq', 30234);
-            cy.readFile('receipts.json').its(0).its('receiptNumber').should('eq', 1);
-            cy.readFile('receipts.json').its(0).its('items').its(0).its('itemId').should('eq', 'GROC001');
-            cy.readFile('receipts.json').its(0).its('items').its(0).its('itemPrice').should('eq', 10);
-            cy.readFile('receipts.json').its(0).its('items').its(0).its('taxRate').should('eq', 0.06);
-            cy.readFile('receipts.json').its(0).its('items').its(0).its('discount').should('eq', 0.00);
-            cy.readFile('receipts.json').its(0).its('items').its(1).its('itemId').should('eq', 'GROC001');
-            cy.readFile('receipts.json').its(0).its('items').its(1).its('itemPrice').should('eq', 10);
-            cy.readFile('receipts.json').its(0).its('items').its(1).its('taxRate').should('eq', 0.06);
-            cy.readFile('receipts.json').its(0).its('items').its(1).its('discount').should('eq', 0.00);
-            cy.readFile('receipts.json').its(0).its('items').its(2).its('itemId').should('eq', 'GROC002');
-            cy.readFile('receipts.json').its(0).its('items').its(2).its('itemPrice').should('eq', 20);
-            cy.readFile('receipts.json').its(0).its('items').its(2).its('taxRate').should('eq', 0.02);
-            cy.readFile('receipts.json').its(0).its('items').its(2).its('discount').should('eq', 0.10);
-            cy.readFile('receipts.json').its(0).its('itemsSold').should('eq', 3);
-            cy.readFile('receipts.json').its(0).its('total').should('eq', 39.60);
-            cy.readFile('receipts.json').its(0).its('timestamp').should('eq', '2021-02-01 14:00:00 EST');
+        var receipts = require('/receipts.json'); 
+        for (var i = 0; i < receipts.length; i++) {
+            cy.readFile('receipts.json').its(i).its('storeId').should('match', /[A-Z0-9]{3}/g);
+            cy.readFile('receipts.json').its(i).its('pinCode').should('match', /(?<!\d)\d{5}(?!\d)/g);
+            cy.readFile('receipts.json').its(i).its('receiptNumber').should('match', /\d+/g);
+            cy.readFile('receipts.json').its(i).its('itemsSold').should('match', /\d+/g);
+            cy.readFile('receipts.json').its(i).its('total').should('match', /[+-]?([0-9]*[.])?[0-9]+/g);
+            // cy.readFile('receipts.json').its(i).its('timestamp').should('match', '2021-02-01 14:00:00 EST');
+            //for(var j = 0; receipts[i].items.length; j++ ){
+            cy.readFile('receipts.json').its(i).its('items').its(0).its('itemId').should('match', /[A-Za-z0-9]/g);
+            cy.readFile('receipts.json').its(i).its('items').its(0).its('itemPrice').should('match', /[+-]?([0-9]*[.])?[0-9]+/g);
+            cy.readFile('receipts.json').its(i).its('items').its(0).its('taxRate').should('match', /^(0(\.\d+)?|1(\.0+)?)$/g);
+            cy.readFile('receipts.json').its(i).its('items').its(0).its('discount').should('match', /^(0(\.\d+)?|1(\.0+)?)$/g);
+            //}
+        }
     });
     // 2
     it('should validate grand totals', function () {
@@ -104,12 +101,10 @@ describe('Receipt Validation Test', function () {
     // 5. Determine most sold item
     it('should return most sold item', function () {
         var receipts = require('/receipts.json');
-        var mostSoldItem = 'GROC001';
-        var mostFrequentItem = 'temp';
+        var mostFrequentItem = '';
         var mostFrequent = 1;
-        var most = 0;
+        var mostCount = 0;
         var items = [];
-  
         for (var i = 0; i < receipts.length; i++) {
             for (var j = 0; j < receipts[i].items.length; j++) {
                 if (receipts[i].items[j].itemPrice >= 0) {
@@ -121,19 +116,19 @@ describe('Receipt Validation Test', function () {
             }
         }
   
-        for (var k = 0; k < items.length; k++) {
-            for (var l = k; l < items.length; l++) {
-                if (items[k] === items[l]) {
-                    most++;
+        for (var x = 0; x < items.length; x++) {
+            for (var y = x; y < items.length; y++) {
+                if (items[x] === items[y]) {
+                    mostCount++;
                 }
-                if (mostFrequent < most) {
-                    mostFrequent = most;
-                    mostFrequentItem = items[k];
+                if (mostFrequent < mostCount) {
+                    mostFrequent = mostCount;
+                    mostFrequentItem = items[x];
                 }
             }
-            most = 0;
+            mostCount = 0;
         }
-        cy.expect(mostFrequentItem).to.deep.equal(mostSoldItem);
+        cy.expect(mostFrequentItem).to.deep.equal('GROC001');
     });
   });
   
