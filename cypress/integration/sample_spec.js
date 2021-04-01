@@ -1,7 +1,9 @@
 describe('Receipt Validation Test', function () {
     // 1
     it('should validate the values of the fields', function () {
-        var receipts = require('/receipts.json'); 
+        var receipts = require('/receipts.json');
+        //regex for validating field
+        
         for (var i = 0; i < receipts.length; i++) {
             cy.readFile('receipts.json').its(i).its('storeId').should('match', /[A-Z0-9]{3}/g);
             cy.readFile('receipts.json').its(i).its('pinCode').should('match', /(?<!\d)\d{5}(?!\d)/g);
@@ -36,7 +38,6 @@ describe('Receipt Validation Test', function () {
                 itemTotal = price + (price * taxRate) - (price * discount);
                 total += itemTotal;
             }
-
             cy.readFile('receipts.json').its(i).its('total').should('eq', Math.round(total * 10) / 10);
         }   
     });
@@ -61,21 +62,13 @@ describe('Receipt Validation Test', function () {
             }
             itemsCount.push(count);
             count = 0;
+            cy.readFile('receipts.json').its(i).its('itemsSold').should('be.gt', 0);
+            cy.readFile('receipts.json').its(i).its('itemsSold').should('eq', itemsCount[i]);
         }
-        //first receipt
-        var itemsSold = 3;
-        cy.expect(itemsCount[0]).to.deep.equal(itemsSold);
-        cy.readFile('receipts.json').its(0).its('itemsSold').should('be.gt', 0);
-        cy.readFile('receipts.json').its(0).its('itemsSold').should('eq', itemsSold);
-        //second receipt
-        itemsSold = 2;
-        cy.expect(itemsCount[1]).to.deep.equal(itemsSold);
-        cy.readFile('receipts.json').its(1).its('itemsSold').should('be.gt', 0);
-        cy.readFile('receipts.json').its(1).its('itemsSold').should('eq', itemsSold);
 
     });
   
-    // 4. Ensures receipts are valid
+    // 4. 
     it('should ensure receipts are valid', function () {
         var receipts = require('/receipts.json');
         // Expect receipts to come from the same date
@@ -98,7 +91,7 @@ describe('Receipt Validation Test', function () {
         } 
     });
   
-    // 5. Determine most sold item
+    // 5
     it('should return most sold item', function () {
         var receipts = require('/receipts.json');
         var mostFrequentItem = '';
@@ -128,8 +121,7 @@ describe('Receipt Validation Test', function () {
             }
             mostCount = 0;
         }
-        cy.expect(mostFrequentItem).to.deep.equal('GROC001');
+        cy.expect(mostFrequentItem).to.deep.equal('GROC001'); //hard coded most sold item
     });
   });
-  
   
