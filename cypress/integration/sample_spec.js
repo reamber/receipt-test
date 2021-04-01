@@ -20,7 +20,6 @@ describe('Receipt Validation Test', function () {
             cy.readFile('receipts.json').its(0).its('total').should('eq', 39.60);
             cy.readFile('receipts.json').its(0).its('timestamp').should('eq', '2021-02-01 14:00:00 EST');
     });
-  
     // 2
     it('should validate grand totals', function () {
         
@@ -82,24 +81,24 @@ describe('Receipt Validation Test', function () {
     // 4. Ensures receipts are valid
     it('should ensure receipts are valid', function () {
         var receipts = require('/receipts.json');
-        var timestamp = receipts[0].timestamp;
-        cy.readFile('receipts.json').its(0).its('receiptNumber').should('eq', receipts[0].receiptNumber);
-        cy.readFile('receipts.json').its(0).its('timestamp').should('eq', timestamp);
-        cy.readFile('receipts.json').its(0).its('receiptNumber').should('not.eq', receipts[1].receiptNumber);
-        cy.readFile('receipts.json').its(1).its('receiptNumber').should('not.eq', receipts[0].receiptNumber);
-        cy.readFile('receipts.json').its(1).its('timestamp').should('eq', timestamp);
-        cy.readFile('receipts.json').its(1).its('receiptNumber').should('eq', receipts[1].receiptNumber);
-
         // Expect receipts to come from the same date
-        cy.expect(receipts[0].timestamp).to.deep.equal(receipts[1].timestamp);
-
+        //all receipt come from same store
         var pinCode = 30234;
         var storeId = 'WAL001';
-        //all receipt come from same store
-        cy.readFile('receipts.json').its(0).its('pinCode').should('eq', pinCode);
-        cy.readFile('receipts.json').its(0).its('storeId').should('eq', storeId);
-        cy.readFile('receipts.json').its(1).its('pinCode').should('eq', pinCode);
-        cy.readFile('receipts.json').its(1).its('storeId').should('eq', storeId);
+        for (var i = 0; i < receipts.length - 1; i++) {
+            cy.expect(receipts[i].timestamp).to.deep.equal(receipts[i+1].timestamp);
+            cy.readFile('receipts.json').its(i).its('receiptNumber').should('eq', receipts[i].receiptNumber);
+            cy.readFile('receipts.json').its(i).its('timestamp').should('eq', receipts[i].timestamp);
+            cy.readFile('receipts.json').its(i).its('receiptNumber').should('not.eq', receipts[i+1].receiptNumber);
+            cy.readFile('receipts.json').its(i+1).its('receiptNumber').should('not.eq', receipts[i].receiptNumber);
+            cy.readFile('receipts.json').its(i+1).its('timestamp').should('eq', receipts[i].timestamp);
+            cy.readFile('receipts.json').its(i+1).its('receiptNumber').should('eq', receipts[i+1].receiptNumber);
+
+            cy.readFile('receipts.json').its(i).its('pinCode').should('eq', pinCode);
+            cy.readFile('receipts.json').its(i).its('storeId').should('eq', storeId);
+            cy.readFile('receipts.json').its(i).its('pinCode').should('eq', pinCode);
+            cy.readFile('receipts.json').its(i).its('storeId').should('eq', storeId);
+        } 
     });
   
     // 5. Determine most sold item
@@ -137,4 +136,5 @@ describe('Receipt Validation Test', function () {
         cy.expect(mostFrequentItem).to.deep.equal(mostSoldItem);
     });
   });
+  
   
